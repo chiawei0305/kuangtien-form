@@ -16,13 +16,11 @@ async function initLiff() {
     }
   } catch (err) {
     console.warn('LIFF init failed, fallback:', err);
-    showManualNameField();
   }
   document.getElementById('liff-loading').classList.add('hidden');
 }
 
 function renderLineProfile(profile) {
-  // 頂部用戶列（讓使用者知道已驗證）
   document.getElementById('top-name').textContent = profile.displayName;
   const topWrap = document.getElementById('top-avatar-wrap');
   if (profile.pictureUrl) {
@@ -31,44 +29,71 @@ function renderLineProfile(profile) {
   document.getElementById('top-user-bar').classList.add('show');
 }
 
-function showManualNameField() {
-  // LIFF 失敗的 fallback — 沒什麼要做的，姓名欄位本來就可輸入
+// ─── 蒐集問卷答案與標籤 ─────────────────────────────────
+function collectSurvey() {
+  const answers = {};
+  const tags = [];
+
+  // 單選題 Q1, Q2
+  ['q1', 'q2'].forEach(name => {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    if (el) {
+      answers[name] = el.value;
+      if (el.dataset.tag) tags.push(el.dataset.tag);
+    } else {
+      answers[name] = '';
+    }
+  });
+
+  // 多選題 Q3, Q4
+  ['q3', 'q4'].forEach(name => {
+    const els = document.querySelectorAll(`input[name="${name}"]:checked`);
+    answers[name] = [...els].map(e => e.value).join('、');
+    [...els].forEach(e => { if (e.dataset.tag) tags.push(e.dataset.tag); });
+  });
+
+  // 生日月份
+  const bMonth = document.getElementById('f-birth-month').value;
+  answers.birthMonth = bMonth;
+  if (bMonth) tags.push(`${bMonth}生日`);
+
+  return { answers, tags };
 }
 
 // ─── 提交 ───────────────────────────────────────────────
 async function submitForm() {
-  const name     = document.getElementById('f-name').value.trim();
-  const phone    = document.getElementById('f-phone').value.trim();
-  const birthday = document.getElementById('f-birthday').value.trim();
-  const email    = document.getElementById('f-email').value.trim();
-  const address  = document.getElementById('f-address').value.trim();
-
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
   const errEl = document.getElementById('form-error');
-  const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
+  const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
-  if (!name)     return showErr('請填寫姓名');
-  if (!phone)    return showErr('請填寫電話');
-  if (!birthday) return showErr('請選擇生日');
-  if (!email)    return showErr('請填寫電子信箱');
+  const { answers, tags } = collectSurvey();
+
+  if (!answers.q1) return showErr('請完成 Q1：知道鱸魚如何幫助胸口悶之苦？');
+  if (!answers.q2) return showErr('請完成 Q2：小孩的年齡');
+  if (!answers.q3) return showErr('請完成 Q3：會在意孩子或自己是否有以下情形？');
+  if (!answers.q4) return showErr('請完成 Q4：有沒有以下過敏或體質狀況？');
+  if (!name)       return showErr('請填寫姓名');
+  if (!phone)      return showErr('請填寫電話');
+  if (!answers.birthMonth) return showErr('請選擇生日月份');
 
   if (!/^[0-9\-\+\s]{8,20}$/.test(phone)) {
     return showErr('電話格式不正確，請重新確認');
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return showErr('電子信箱格式不正確，請重新確認');
-  }
-
   errEl.style.display = 'none';
 
   const payload = {
-    timestamp:   new Date().toISOString(),
+    timestamp:    new Date().toISOString(),
     name,
     phone,
-    birthday,
-    email,
-    address,
-    lineUserId:  lineProfile?.userId      || '',
+    birthMonth:   answers.birthMonth,
+    q1:           answers.q1,
+    q2:           answers.q2,
+    q3:           answers.q3,
+    q4:           answers.q4,
+    tags,
+    lineUserId:   lineProfile?.userId      || '',
     lineUserName: lineProfile?.displayName || name,
   };
 

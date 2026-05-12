@@ -1,18 +1,17 @@
 /**
- * 光田醫院 — 會員資料登錄 Apps Script
+ * 光田醫院 × 幸福鱸魚 — 抽獎問卷 Apps Script
  *
  * 部署方式：
  *   1. 在 Google Sheet 上方選單 → 擴充功能 → Apps Script
  *   2. 將本檔內容貼入 Code.gs，存檔
  *   3. 設定指令碼屬性（專案設定 → 指令碼屬性 → 加入屬性）：
- *        SUPER8_API_KEY   = 你的 Super 8 API Key
- *        SUPER8_ORG_ID    = 光田醫院的 Super 8 Organization ID
- *        SUPER8_TAG_NAME  = 要打的標籤名稱（例如：光田會員）
- *   4. 點「部署」→「新增部署作業」→ 類型選「網頁應用程式」
- *        執行身分：我　／　誰可以存取：所有人
+ *        SUPER8_API_KEY = Super 8 API Key
+ *        SUPER8_ORG_ID  = Super 8 Organization ID
+ *   4. 部署 → 新增部署作業 → 類型「網頁應用程式」
+ *        執行身分：我 ／ 誰可以存取：所有人
  *   5. 部署後取得 /exec URL，貼到前端 app.js 的 APPS_SCRIPT_URL
  *
- * 注意：每次修改程式碼後要重新部署（新增版本），URL 才會生效。
+ * 注意：每次改完程式碼，需「管理部署作業 → 新版本」才會生效。
  */
 
 // ── 設定區 ─────────────────────────────────────────────
@@ -20,8 +19,9 @@ const SHEET_ID   = '1mj3wBCJfFkgd24BlK51t5012Q2EcVDNIyWY48_hiKd0';
 const SHEET_NAME = '會員資料';   // 工作表名稱（找不到會自動建立）
 
 const HEADERS = [
-  '送出時間', '姓名', '電話', '生日', '電子信箱', '地址',
-  'LINE userId', 'LINE 顯示名稱', 'Super 8 打標結果'
+  '送出時間', '姓名', '電話', '生日月份',
+  'Q1 知道鱸魚', 'Q2 小孩年齡', 'Q3 健康狀況', 'Q4 過敏體質',
+  'LINE userId', 'LINE 顯示名稱', '打標標籤', 'Super 8 結果'
 ];
 
 // Super 8 API
@@ -35,11 +35,16 @@ const SUPER8_BASE = 'https://api-service.luckycat.no8.io';
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
+    const tags = Array.isArray(data.tags) ? data.tags : [];
 
-    // 1. Super 8 打標籤（如果有 lineUserId）
-    let tagResult = '無 LINE userId，略過';
-    if (data.lineUserId) {
-      tagResult = tagSuper8User_(data.lineUserId);
+    // 1. Super 8 打標籤（如有 lineUserId 且有 tags）
+    let tagResult = '略過';
+    if (data.lineUserId && tags.length > 0) {
+      tagResult = tagSuper8User_(data.lineUserId, tags);
+    } else if (!data.lineUserId) {
+      tagResult = '無 LINE userId';
+    } else {
+      tagResult = '無對應標籤';
     }
 
     // 2. 寫入 Sheet
@@ -50,11 +55,14 @@ function doPost(e) {
       formatTimestamp_(data.timestamp),
       data.name         || '',
       data.phone        || '',
-      data.birthday     || '',
-      data.email        || '',
-      data.address      || '',
+      data.birthMonth   || '',
+      data.q1           || '',
+      data.q2           || '',
+      data.q3           || '',
+      data.q4           || '',
       data.lineUserId   || '',
       data.lineUserName || '',
+      tags.join('、'),
       tagResult
     ]);
 
@@ -67,12 +75,12 @@ function doPost(e) {
 
 
 /**
- * GET 健康檢查 — 在瀏覽器打開 /exec 可確認部署成功
+ * GET 健康檢查
  */
 function doGet() {
   return jsonResponse_({
     ok: true,
-    service: '光田醫院 — 會員資料登錄',
+    service: '光田 × 幸福鱸魚 — 抽獎問卷',
     time: new Date().toISOString()
   });
 }
@@ -81,14 +89,14 @@ function doGet() {
 // ── Super 8 打標籤 ──────────────────────────────────────
 
 /**
- * 呼叫 Super 8 API 給該 LINE 用戶打標籤
- * @return {string} 執行結果摘要（會寫到 Sheet 最後一欄方便對帳）
+ * @param {string} lineUserId
+ * @param {string[]} tags
+ * @return {string} 結果摘要
  */
-function tagSuper8User_(lineUserId) {
-  const props   = PropertiesService.getScriptProperties();
-  const apiKey  = props.getProperty('SUPER8_API_KEY');
-  const orgId   = props.getProperty('SUPER8_ORG_ID');
-  const tagName = props.getProperty('SUPER8_TAG_NAME') || '光田會員';
+function tagSuper8User_(lineUserId, tags) {
+  const props  = PropertiesService.getScriptProperties();
+  const apiKey = props.getProperty('SUPER8_API_KEY');
+  const orgId  = props.getProperty('SUPER8_ORG_ID');
 
   if (!apiKey || !orgId) {
     return 'ERROR: 指令碼屬性 SUPER8_API_KEY / SUPER8_ORG_ID 未設定';
@@ -102,7 +110,7 @@ function tagSuper8User_(lineUserId) {
     payload: JSON.stringify({
       organization: orgId,
       customerId: lineUserId,
-      tags: [tagName]
+      tags: tags
     }),
     muteHttpExceptions: true
   };
@@ -111,7 +119,7 @@ function tagSuper8User_(lineUserId) {
   const code = res.getResponseCode();
   const body = res.getContentText();
 
-  Logger.log(`Super8 tag [${lineUserId}]: ${code} ${body}`);
+  Logger.log(`Super8 tag [${lineUserId}] ${tags.join(',')}: ${code} ${body}`);
   return (code >= 200 && code < 300) ? `OK (${code})` : `FAIL ${code}: ${body}`;
 }
 
@@ -145,7 +153,7 @@ function jsonResponse_(obj) {
 }
 
 
-// ── 測試函式（在 Apps Script 編輯器手動執行） ──────────
+// ── 測試函式 ────────────────────────────────────────────
 
 function testWrite() {
   doPost({
@@ -154,9 +162,12 @@ function testWrite() {
         timestamp: new Date().toISOString(),
         name: '測試用戶',
         phone: '0912-345-678',
-        birthday: '1990-01-01',
-        email: 'test@example.com',
-        address: '台中市沙鹿區沙田路117號',
+        birthMonth: '三月',
+        q1: '知道',
+        q2: '幼稚園',
+        q3: '常感冒/免疫力差、腸胃敏感/易脹氣便祕',
+        q4: '對海鮮或魚類過敏',
+        tags: ['知道', '小孩幼稚園', '免疫', '腸胃道保養', '海鮮過敏', '三月生日'],
         lineUserId: 'U_test_123',
         lineUserName: '測試'
       })
@@ -165,5 +176,5 @@ function testWrite() {
 }
 
 function testTag() {
-  Logger.log(tagSuper8User_('U_test_123'));
+  Logger.log(tagSuper8User_('U_test_123', ['測試標籤']));
 }

@@ -1,46 +1,61 @@
-# 光田醫院 — 動動手30秒參加抽獎
+# 光田醫院 × 幸福鱸魚 — 抽獎問卷
 
-LINE LIFF 內嵌的會員資料登錄表單。填完自動寫入 Google Sheet，並透過 Super 8 API 自動為 LINE 用戶打標籤。
+LINE LIFF 內嵌的客戶問卷暨會員登錄表單。填完寫入 Google Sheet，並依據答案透過 Super 8 API 為 LINE 用戶打對應標籤。
 
 ## 技術架構
 
 ```
 LIFF (Zeabur Static)       後台
 index.html  ──POST──▶  Apps Script  ──▶  Google Sheet
-                            └──────▶  Super 8 API (打標籤)
+                            └──────▶  Super 8 API（依答案打標籤）
 ```
 
 ## 檔案結構
 
 | 檔案 | 說明 |
 |------|------|
-| `index.html` | 表單頁面（純 HTML） |
-| `styles.css` | 樣式（光田藍 `#005BAC` / `#00A3E0`） |
-| `app.js` | LIFF 初始化、表單驗證、送出邏輯 |
-| `code.gs` | Apps Script 後端（複製貼進 Sheet 的 Apps Script 編輯器） |
+| `index.html` | 問卷頁面 |
+| `styles.css` | 粉色配色（`#F2AEAB` / `#E89490`） |
+| `app.js` | LIFF 初始化、答案蒐集、送出邏輯 |
+| `code.gs` | Apps Script 後端 |
 
-## 表單欄位
+## 問卷內容
 
-| 欄位 | 必填 | 備註 |
-|------|------|------|
-| 姓名 | ✅ | LIFF 自動帶入，唯讀 |
-| 電話 | ✅ | 8–20 位數字／橫線／加號 |
-| 生日 | ✅ | date picker |
-| 電子信箱 | ✅ | email 格式驗證 |
-| 地址 | — | 選填 |
+| # | 題目 | 類型 | 必填 |
+|---|------|------|------|
+| Q1 | 知道鱸魚如何幫助胸口悶之苦？ | 單選 | ✅ |
+| Q2 | 小孩的年齡 | 單選 | ✅ |
+| Q3 | 會在意孩子或自己是否有以下情形？（可複選）| 多選 | ✅ |
+| Q4 | 有沒有以下過敏或體質狀況？（可複選）| 多選 | ✅ |
+| — | 姓名 | text | ✅ |
+| — | 電話 | tel | ✅ |
+| — | 生日（月份）| select | ✅ |
+
+每個選項可在 HTML 用 `data-tag="..."` 設定對應的 Super 8 標籤。空字串代表不打標籤。
+
+## Super 8 標籤對應
+
+| 題目 | 選項 → 標籤 |
+|------|-----------|
+| Q1 | 知道→`知道`／不知道→`不知道` |
+| Q2 | 小於3歲→`小孩小於3歲`／幼稚園→`小孩幼稚園`／國小→`小孩國小`／國高中→`小孩國高中`／成人→`小孩成人`／無→（無） |
+| Q3 | 常感冒→`免疫`／腸胃→`腸胃道保養`／睡眠→`睡眠障礙`／關節→`關節保養`／無不適→`注重健康` |
+| Q4 | 海鮮→`海鮮過敏`／濕疹→`過敏肌`／鼻過敏→`鼻子過敏`／無→（無） |
+| 生日 | 一月→`一月生日` ⋯ 十二月→`十二月生日` |
 
 ## Apps Script 部署
 
 1. 開啟 Google Sheet → **擴充功能 → Apps Script**
 2. 把 `code.gs` 內容貼進 `Code.gs`
-3. **專案設定 → 指令碼屬性** 新增三個屬性：
-   - `SUPER8_API_KEY` — Super 8 後台的 API Key
-   - `SUPER8_ORG_ID` — 光田組織 ID
-   - `SUPER8_TAG_NAME` — 標籤名稱（預設 `光田會員`）
+3. **專案設定 → 指令碼屬性** 新增兩個屬性：
+   - `SUPER8_API_KEY` — Super 8 API Key
+   - `SUPER8_ORG_ID` — 組織 ID
 4. **部署 → 新增部署作業 → 網頁應用程式**
    - 執行身分：我
    - 誰可以存取：所有人
 5. 把 `/exec` URL 貼到 `app.js` 的 `APPS_SCRIPT_URL`
+
+⚠️ **每次修改 `code.gs` 之後**，必須去「**管理部署作業 → 新版本 → 部署**」讓 URL 跑新代碼。
 
 ## 前端部署（Zeabur）
 
@@ -52,16 +67,17 @@ Zeabur 偵測為靜態網站自動部署。
 
 ## LIFF 設定
 
-LIFF URL 須指向 Zeabur 部署後的網域（在 LINE Developers 後台設定 Endpoint URL）。
+LIFF Endpoint URL 需指向 Zeabur 部署後的網域。
+
+## Sheet 欄位
+
+| 送出時間 | 姓名 | 電話 | 生日月份 | Q1–Q4 | LINE userId | LINE 顯示名稱 | 打標標籤 | Super 8 結果 |
+|---|---|---|---|---|---|---|---|---|
 
 ## 本地測試
 
-LIFF 需要 HTTPS，本地測試可用：
-
 ```bash
-npx serve .
-# 或
 python3 -m http.server 8080
 ```
 
-但 LINE 登入流程必須走部署後的 LIFF URL 才能正常運作。
+LIFF 登入流程須走部署後的 LIFF URL 才能正常運作。

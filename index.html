@@ -11,15 +11,15 @@
 
 <!-- LIFF 載入畫面 -->
 <div id="liff-loading">
-  <div style="font-size:2.5rem">🏥</div>
+  <div style="font-size:2.5rem">🐟</div>
   <div class="spinner"></div>
   <span>載入中…</span>
 </div>
 
 <!-- Header -->
 <div class="header-banner">
-  <div class="header-logo">🏥</div>
-  <div class="header-title">動動手30秒參加抽獎</div>
+  <div class="header-logo">🎁</div>
+  <div class="header-title">填寫30秒，送您精美好禮</div>
   <div class="header-sub">填寫以下資料即可參加抽獎，幸福鱸魚誠摯邀請您</div>
 </div>
 
@@ -39,7 +39,95 @@
   <!-- 表單區塊 -->
   <div id="form-section">
     <div class="form-card">
-      <div class="form-card-title">基本資料填寫</div>
+      <div class="form-card-title">問卷內容</div>
+
+      <!-- Q1：知道鱸魚 -->
+      <fieldset class="q-block" data-q="q1">
+        <legend>Q1. 知道鱸魚如何幫助胸口悶之苦？ <span class="req">*</span></legend>
+        <label class="opt">
+          <input type="radio" name="q1" value="知道" data-tag="知道">
+          <span class="opt-mark"></span><span class="opt-text">知道</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q1" value="不知道" data-tag="不知道">
+          <span class="opt-mark"></span><span class="opt-text">不知道</span>
+        </label>
+      </fieldset>
+
+      <!-- Q2：小孩年齡 -->
+      <fieldset class="q-block" data-q="q2">
+        <legend>Q2. 小孩的年齡 <span class="req">*</span></legend>
+        <label class="opt">
+          <input type="radio" name="q2" value="小於3歲" data-tag="小孩小於3歲">
+          <span class="opt-mark"></span><span class="opt-text">小於3歲</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="幼稚園" data-tag="小孩幼稚園">
+          <span class="opt-mark"></span><span class="opt-text">幼稚園</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="國小" data-tag="小孩國小">
+          <span class="opt-mark"></span><span class="opt-text">國小</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="國高中" data-tag="小孩國高中">
+          <span class="opt-mark"></span><span class="opt-text">國高中</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="成人" data-tag="小孩成人">
+          <span class="opt-mark"></span><span class="opt-text">成人</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q2" value="無" data-tag="">
+          <span class="opt-mark"></span><span class="opt-text">無</span>
+        </label>
+      </fieldset>
+
+      <!-- Q3：健康狀況（複選） -->
+      <fieldset class="q-block multi" data-q="q3">
+        <legend>Q3. 會在意孩子或自己是否有以下情形？（可複選）<span class="req">*</span></legend>
+        <label class="opt">
+          <input type="checkbox" name="q3" value="常感冒/免疫力差" data-tag="免疫">
+          <span class="opt-mark"></span><span class="opt-text">常感冒／免疫力差</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q3" value="腸胃敏感/易脹氣便祕" data-tag="腸胃道保養">
+          <span class="opt-mark"></span><span class="opt-text">腸胃敏感／易脹氣便祕</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q3" value="睡不好/成長期情緒波動" data-tag="睡眠障礙">
+          <span class="opt-mark"></span><span class="opt-text">睡不好／成長期情緒波動</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q3" value="關節卡卡/長期挑嘴" data-tag="關節保養">
+          <span class="opt-mark"></span><span class="opt-text">關節卡卡／長期挑嘴</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q3" value="無明顯不適，想注重保健" data-tag="注重健康">
+          <span class="opt-mark"></span><span class="opt-text">無明顯不適，想注重保健</span>
+        </label>
+      </fieldset>
+
+      <!-- Q4：過敏體質（複選） -->
+      <fieldset class="q-block multi" data-q="q4">
+        <legend>Q4. 有沒有以下過敏或體質狀況？（可複選）<span class="req">*</span></legend>
+        <label class="opt">
+          <input type="checkbox" name="q4" value="對海鮮或魚類過敏" data-tag="海鮮過敏">
+          <span class="opt-mark"></span><span class="opt-text">對海鮮或魚類過敏</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4" value="濕疹、異位性皮膚炎" data-tag="過敏肌">
+          <span class="opt-mark"></span><span class="opt-text">濕疹、異位性皮膚炎</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4" value="鼻子過敏/氣喘" data-tag="鼻子過敏">
+          <span class="opt-mark"></span><span class="opt-text">鼻子過敏／氣喘</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4" value="無過敏體質" data-tag="">
+          <span class="opt-mark"></span><span class="opt-text">無過敏體質</span>
+        </label>
+      </fieldset>
 
       <!-- 姓名 -->
       <div class="field">
@@ -53,31 +141,33 @@
         <input id="f-phone" type="tel" placeholder="09XX-XXX-XXX" maxlength="20">
       </div>
 
-      <!-- 生日 -->
+      <!-- 生日月份 -->
       <div class="field">
-        <label for="f-birthday">生日 <span class="req">*</span></label>
-        <input id="f-birthday" type="date" max="2020-01-01">
-      </div>
-
-      <!-- 電子信箱 -->
-      <div class="field">
-        <label for="f-email">電子信箱 <span class="req">*</span></label>
-        <input id="f-email" type="email" placeholder="example@email.com" maxlength="80">
-      </div>
-
-      <!-- 地址 -->
-      <div class="field">
-        <label for="f-address">地址（選填）</label>
-        <input id="f-address" type="text" placeholder="縣市 + 鄉鎮 + 路段 + 門號" maxlength="100">
+        <label for="f-birth-month">生日（月份）<span class="req">*</span></label>
+        <select id="f-birth-month">
+          <option value="">請選擇月份</option>
+          <option value="一月">一月</option>
+          <option value="二月">二月</option>
+          <option value="三月">三月</option>
+          <option value="四月">四月</option>
+          <option value="五月">五月</option>
+          <option value="六月">六月</option>
+          <option value="七月">七月</option>
+          <option value="八月">八月</option>
+          <option value="九月">九月</option>
+          <option value="十月">十月</option>
+          <option value="十一月">十一月</option>
+          <option value="十二月">十二月</option>
+        </select>
       </div>
     </div>
 
-    <button class="btn-submit" id="btn-submit" onclick="submitForm()">送出資料</button>
+    <button class="btn-submit" id="btn-submit" onclick="submitForm()">送出資料 🎁</button>
     <div class="error-msg" id="form-error"></div>
 
     <p class="privacy-note">
-      本問卷資料僅供光田醫院內部使用，不會對外公開或轉售。<br>
-      填寫即代表您同意本院依相關法規使用您的個人資料。
+      本問卷資料僅供活動主辦單位使用，不會對外公開或轉售。<br>
+      填寫即代表您同意主辦單位依相關法規使用您的個人資料。
     </p>
   </div>
 
