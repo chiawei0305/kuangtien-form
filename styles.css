@@ -47,11 +47,11 @@ body {
 
 /* Banner under LINE bar */
 .banner-img {
-  width: 100%;
+  width: 70%;
   height: auto;
   display: block;
+  margin: 0 auto 16px;
   border-radius: 16px;
-  margin-bottom: 16px;
   box-shadow: 0 4px 20px rgba(232,148,144,0.18);
 }
 
