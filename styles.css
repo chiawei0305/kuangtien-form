@@ -45,10 +45,11 @@ body {
   margin-bottom: 2px;
 }
 
-/* Banner under LINE bar */
+/* Banner under LINE bar — 9:16 直幅滿版 */
 .banner-img {
   width: 100%;
-  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
   display: block;
   border-radius: 16px;
   margin-bottom: 16px;
