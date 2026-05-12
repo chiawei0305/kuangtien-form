@@ -22,32 +22,17 @@ async function initLiff() {
 }
 
 function renderLineProfile(profile) {
-  // 頂部用戶列
+  // 頂部用戶列（讓使用者知道已驗證）
   document.getElementById('top-name').textContent = profile.displayName;
   const topWrap = document.getElementById('top-avatar-wrap');
   if (profile.pictureUrl) {
     topWrap.innerHTML = `<img class="top-avatar" src="${profile.pictureUrl}" alt="avatar">`;
   }
   document.getElementById('top-user-bar').classList.add('show');
-
-  // 表單內 LINE profile
-  document.getElementById('line-display-name').textContent = profile.displayName;
-  const formAvatarWrap = document.getElementById('form-avatar-wrap');
-  if (profile.pictureUrl) {
-    formAvatarWrap.innerHTML = `<img class="line-avatar-sm" src="${profile.pictureUrl}" alt="avatar">`;
-  }
-  document.getElementById('line-profile-row').classList.add('show');
-
-  // 自動填入姓名（唯讀）
-  const nameInput = document.getElementById('f-name');
-  nameInput.value = profile.displayName;
-  nameInput.readOnly = true;
 }
 
 function showManualNameField() {
-  const nameInput = document.getElementById('f-name');
-  nameInput.readOnly = false;
-  nameInput.placeholder = '請輸入你的姓名';
+  // LIFF 失敗的 fallback — 沒什麼要做的，姓名欄位本來就可輸入
 }
 
 // ─── 提交 ───────────────────────────────────────────────
