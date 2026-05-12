@@ -16,6 +16,7 @@
  */
 
 // ── 設定區 ─────────────────────────────────────────────
+const SHEET_ID   = '1mj3wBCJfFkgd24BlK51t5012Q2EcVDNIyWY48_hiKd0';
 const SHEET_NAME = '會員資料';   // 工作表名稱（找不到會自動建立）
 
 const HEADERS = [
@@ -118,7 +119,7 @@ function tagSuper8User_(lineUserId) {
 // ── 工具函式 ────────────────────────────────────────────
 
 function getOrCreateSheet_(name) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   return ss.getSheetByName(name) || ss.insertSheet(name);
 }
 
