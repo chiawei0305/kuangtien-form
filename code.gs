@@ -127,7 +127,7 @@ function ensureHeaders_(sheet) {
   sheet.appendRow(HEADERS);
   sheet.getRange(1, 1, 1, HEADERS.length)
        .setFontWeight('bold')
-       .setBackground('#005BAC')
+       .setBackground('#F2AEAB')
        .setFontColor('#ffffff');
   sheet.setFrozenRows(1);
 }
