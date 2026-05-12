@@ -69,7 +69,7 @@ async function submitForm() {
 
   const { answers, tags } = collectSurvey();
 
-  if (!answers.q1) return showErr('請完成 Q1：知道鱸魚如何幫助胸口悶之苦？');
+  if (!answers.q1) return showErr('請完成 Q1：知道鱸魚可以幫助傷口癒合、增強體力嗎？');
   if (!answers.q2) return showErr('請完成 Q2：小孩的年齡');
   if (!answers.q3) return showErr('請完成 Q3：會在意孩子或自己是否有以下情形？');
   if (!answers.q4) return showErr('請完成 Q4：有沒有以下過敏或體質狀況？');
