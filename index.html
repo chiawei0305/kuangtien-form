@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動動手30秒參加抽獎</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- LIFF 載入畫面 -->
+<div id="liff-loading">
+  <div style="font-size:2.5rem">🏥</div>
+  <div class="spinner"></div>
+  <span>載入中…</span>
+</div>
+
+<!-- Header -->
+<div class="header-banner">
+  <div class="header-logo">🏥</div>
+  <div class="header-title">動動手30秒參加抽獎</div>
+  <div class="header-sub">填寫以下資料即可參加抽獎，光田醫院誠摯邀請您</div>
+</div>
+
+<!-- 主內容 -->
+<div class="main-wrap">
+
+  <!-- LINE 用戶列 -->
+  <div id="top-user-bar">
+    <div id="top-avatar-wrap"><div class="top-avatar-placeholder">👤</div></div>
+    <div class="top-user-info">
+      <div class="top-greeting">Hi，</div>
+      <div class="top-name" id="top-name">LINE 用戶</div>
+    </div>
+    <div class="top-line-badge">✅ LINE 已驗證</div>
+  </div>
+
+  <!-- 表單區塊 -->
+  <div id="form-section">
+    <div class="form-card">
+      <div class="form-card-title">基本資料填寫</div>
+
+      <!-- LINE 已登入顯示 -->
+      <div class="line-profile-row" id="line-profile-row">
+        <div id="form-avatar-wrap"><div class="line-avatar-sm-placeholder">👤</div></div>
+        <div class="line-profile-info">
+          <div class="line-profile-name" id="line-display-name">LINE 用戶</div>
+          <div class="line-profile-badge">✅ 已透過 LINE 驗證身份</div>
+        </div>
+      </div>
+
+      <!-- 姓名 -->
+      <div class="field">
+        <label for="f-name">姓名 <span class="req">*</span></label>
+        <input id="f-name" type="text" placeholder="載入中…" maxlength="30" readonly>
+      </div>
+
+      <!-- 電話 -->
+      <div class="field">
+        <label for="f-phone">電話 <span class="req">*</span></label>
+        <input id="f-phone" type="tel" placeholder="09XX-XXX-XXX" maxlength="20">
+      </div>
+
+      <!-- 生日 -->
+      <div class="field">
+        <label for="f-birthday">生日 <span class="req">*</span></label>
+        <input id="f-birthday" type="date" max="2020-01-01">
+      </div>
+
+      <!-- 電子信箱 -->
+      <div class="field">
+        <label for="f-email">電子信箱 <span class="req">*</span></label>
+        <input id="f-email" type="email" placeholder="example@email.com" maxlength="80">
+      </div>
+
+      <!-- 地址 -->
+      <div class="field">
+        <label for="f-address">地址（選填）</label>
+        <input id="f-address" type="text" placeholder="縣市 + 鄉鎮 + 路段 + 門號" maxlength="100">
+      </div>
+    </div>
+
+    <button class="btn-submit" id="btn-submit" onclick="submitForm()">送出資料</button>
+    <div class="error-msg" id="form-error"></div>
+
+    <p class="privacy-note">
+      本問卷資料僅供光田醫院內部使用，不會對外公開或轉售。<br>
+      填寫即代表您同意本院依相關法規使用您的個人資料。
+    </p>
+  </div>
+
+  <!-- 感謝頁 -->
+  <div id="thank-you">
+    <div class="ty-card">
+      <div class="ty-icon">🎉</div>
+      <div class="ty-title">感謝您的填寫！</div>
+      <div class="ty-msg">
+        親愛的 <strong id="ty-name"></strong>，<br>
+        您的資料已成功送出。<br>
+        光田醫院將盡快與您聯繫，感謝您的配合。
+      </div>
+      <div class="ty-divider"></div>
+      <div class="ty-info">
+        如有任何疑問，歡迎聯繫光田醫院服務窗口。<br>
+        謝謝您對光田醫院的支持與信任 🙏
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.main-wrap -->
+
+<!-- 送出遮罩 -->
+<div class="submit-overlay" id="overlay">
+  <div class="spinner"></div>
+  <span>送出中，請稍候…</span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
