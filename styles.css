@@ -45,13 +45,14 @@ body {
   margin-bottom: 2px;
 }
 
-.header-img {
-  max-width: 280px;
-  width: 70%;
+/* Banner under LINE bar */
+.banner-img {
+  width: 100%;
   height: auto;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  display: block;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(232,148,144,0.18);
 }
 
 .header-title {
